@@ -112,5 +112,6 @@ backend bk_denied
     errorfile 403 /etc/haproxy/errors/403.http
 
 
+
     Скриншоты 
     ![alt text](image.png)
