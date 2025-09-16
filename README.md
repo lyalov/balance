@@ -110,3 +110,7 @@ backend bk_example
 backend bk_denied
     mode http
     errorfile 403 /etc/haproxy/errors/403.http
+
+
+    Скриншоты 
+    ![alt text](image.png)
