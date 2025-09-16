@@ -49,3 +49,57 @@ backend bk_simple
     balance roundrobin
     server srv1 127.0.0.1:8001 check
     server srv2 127.0.0.1:8002 check
+
+ОТВЕТ 2
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+    # Default SSL material locations
+    ca-base /etc/ssl/certs
+    crt-base /etc/ssl/private
+
+    ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
+
+frontend ft_http
+    bind *:8080
+    mode http
+
+    # Проверка, что хост — example.local
+    acl host_example hdr(host) -i example.local
+
+    use_backend bk_example if host_example
+    default_backend bk_denied
+
+backend bk_example
+    mode http
+    balance roundrobin
+    server srv1 127.0.0.1:8001 weight 2 check
+    server srv2 127.0.0.1:8002 weight 3 check
+    server srv3 127.0.0.1:8003 weight 4 check
+
+backend bk_denied
+    mode http
+    errorfile 403 /etc/haproxy/errors/403.http
