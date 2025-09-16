@@ -114,4 +114,4 @@ backend bk_denied
 
 
     Скриншоты 
-    ![alt text](image.png)
+    ![alt text](https://github.com/lyalov/balance/blob/main/image.png)
